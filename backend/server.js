@@ -12,16 +12,14 @@ app.use(helmet());
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100 // límite de 100 requests por ventana de tiempo
+  windowMs: 15 * 60 * 1000, 
+  max: 100 
 });
 app.use(limiter);
 
 // CORS
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
-  credentials: true
-}));
+const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+app.use(cors({ origin: ALLOWED_ORIGIN, credentials: true }));
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));

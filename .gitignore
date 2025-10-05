@@ -1,0 +1,81 @@
+# Logs 
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data 
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Instrumented libs 
+lib-cov
+
+# Coverage 
+coverage/
+.nyc_output
+
+# Build / dist files 
+dist/
+build/
+.next
+.nuxt
+.vuepress/dist
+.serverless
+
+# Dependency directories 
+node_modules/
+jspm_packages/
+bower_components/
+
+# Cache 
+.npm
+.cache
+.parcel-cache
+.yarn-integrity
+.fusebox/
+.dynamodb/
+
+# REPL / History 
+.node_repl_history
+
+#  Pack output 
+*.tgz
+
+# Env files 
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+# permite ejemplos
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Uploads (keep folder only) 
+uploads/*
+!uploads/.gitkeep
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files 
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test coverage 
+coverage/
