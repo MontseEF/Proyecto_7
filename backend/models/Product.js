@@ -1,153 +1,114 @@
+// backend/models/Product.js
 const mongoose = require('mongoose');
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'El nombre del producto es requerido'],
-    trim: true,
-    index: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  sku: {
-    type: String,
-    required: [true, 'El SKU es requerido'],
-    unique: true,
-    uppercase: true,
-    trim: true
-  },
-  barcode: {
-    type: String,
-    unique: true,
-    sparse: true,
-    trim: true
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: [true, 'La categoría es requerida']
-  },
-  supplier: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Supplier',
-    required: [true, 'El proveedor es requerido']
-  },
-  brand: {
-    type: String,
-    trim: true
-  },
-  model: {
-    type: String,
-    trim: true
-  },
-  specifications: {
-    weight: String,
-    dimensions: String,
-    material: String,
-    color: String,
-    size: String,
-    other: String
-  },
-  pricing: {
-    costPrice: {
-      type: Number,
-      required: [true, 'El precio de costo es requerido'],
-      min: 0
+const ProductSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'El nombre del producto es requerido'],
+      trim: true,
+      index: true
     },
-    sellingPrice: {
-      type: Number,
-      required: [true, 'El precio de venta es requerido'],
-      min: 0
+    sku: {
+      type: String,
+      required: [true, 'El SKU es requerido'],
+      unique: true,
+      uppercase: true,
+      trim: true
     },
-    wholesalePrice: {
-      type: Number,
-      min: 0
+    barcode: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true
     },
-    discountPrice: {
-      type: Number,
-      min: 0
-    }
-  },
-  inventory: {
-    currentStock: {
-      type: Number,
-      required: true,
-      min: 0,
-      default: 0
+    description: {
+      type: String,
+      trim: true,
+      default: ''
     },
-    minStock: {
-      type: Number,
-      required: true,
-      min: 0,
-      default: 5
+    brand: {
+      type: String,
+      trim: true,
+      default: ''
     },
-    maxStock: {
-      type: Number,
-      min: 0
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      default: null
     },
-    location: {
-      aisle: String,
-      shelf: String,
-      bin: String
-    }
-  },
-  images: [{
-    url: String,
-    alt: String,
-    isPrimary: {
+    supplier: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Supplier',
+      default: null
+    },
+    pricing: {
+      costPrice: {
+        type: Number,
+        default: 0,
+        min: 0
+      },
+      sellingPrice: {
+        type: Number,
+        default: 0,
+        min: 0
+      }
+    },
+    inventory: {
+      currentStock: {
+        type: Number,
+        default: 0,
+        min: 0
+      },
+      minStock: {
+        type: Number,
+        default: 5,
+        min: 0
+      }
+    },
+    images: [
+      {
+        url: { type: String, required: true },
+        alt: { type: String, default: '' },
+        isPrimary: { type: Boolean, default: false }
+      }
+    ],
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    isFeatured: {
       type: Boolean,
       default: false
     }
-  }],
-  tags: [String],
-  isActive: {
-    type: Boolean,
-    default: true
   },
-  isFeatured: {
-    type: Boolean,
-    default: false
-  },
-  unit: {
-    type: String,
-    enum: ['piece', 'kg', 'g', 'l', 'ml', 'm', 'cm', 'box', 'pack'],
-    default: 'piece'
-  },
-  warranty: {
-    duration: Number, // en meses
-    terms: String
-  }
-}, {
-  timestamps: true
-});
+  { timestamps: true }
+);
 
-// Índices para búsqueda eficiente
-productSchema.index({ name: 'text', description: 'text', tags: 'text' });
-productSchema.index({ category: 1, isActive: 1 });
-productSchema.index({ supplier: 1 });
-productSchema.index({ 'inventory.currentStock': 1 });
+// Índices para búsquedas eficientes
+ProductSchema.index({ name: 'text', sku: 'text', barcode: 'text', brand: 'text' });
 
-// Virtual para verificar si está en stock bajo
-productSchema.virtual('isLowStock').get(function() {
+// Virtual: producto con stock bajo
+ProductSchema.virtual('isLowStock').get(function () {
   return this.inventory.currentStock <= this.inventory.minStock;
 });
 
-// Virtual para calcular margen de ganancia
-productSchema.virtual('profitMargin').get(function() {
+// Virtual: margen de ganancia en %
+ProductSchema.virtual('profitMargin').get(function () {
   if (this.pricing.costPrice === 0) return 0;
-  return ((this.pricing.sellingPrice - this.pricing.costPrice) / this.pricing.costPrice * 100).toFixed(2);
+  return (
+    ((this.pricing.sellingPrice - this.pricing.costPrice) / this.pricing.costPrice) *
+    100
+  ).toFixed(2);
 });
 
-// Middleware para actualizar timestamps cuando cambia el stock
-productSchema.pre('save', function(next) {
-  if (this.isModified('inventory.currentStock')) {
-    this.inventory.lastStockUpdate = new Date();
-  }
+// Middleware: normaliza SKU y name
+ProductSchema.pre('save', function (next) {
+  if (this.sku) this.sku = String(this.sku).trim().toUpperCase();
+  if (this.name) this.name = String(this.name).trim();
   next();
 });
 
-productSchema.set('toJSON', { virtuals: true });
+ProductSchema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model('Product', ProductSchema);
