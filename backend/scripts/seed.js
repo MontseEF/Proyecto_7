@@ -1,4 +1,3 @@
-// backend/scripts/seed.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
@@ -20,7 +19,7 @@ async function seedData() {
     // Conexión
    
     await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('✅ Conectado a MongoDB');
+    console.log('Conectado a MongoDB');
 
     // Limpieza
     await Promise.all([
@@ -30,7 +29,7 @@ async function seedData() {
       Product.deleteMany({}),
       Customer.deleteMany({}),
     ]);
-    console.log('🧹 Datos anteriores eliminados');
+    console.log('Datos anteriores eliminados');
 
    
     // 1) Usuarios (con password hasheado)
@@ -63,7 +62,7 @@ async function seedData() {
     ].map(c => ({ ...c, nameLower: c.name.toLowerCase() }));
 
     const createdCategories = await Category.insertMany(categoriesSeed);
-    console.log(`📁 Categorías creadas: ${createdCategories.length}`);
+    console.log(`Categorías creadas: ${createdCategories.length}`);
 
    
     // 3) Proveedores
@@ -112,7 +111,7 @@ async function seedData() {
     
     // 4) Productos (normalizamos SKU a mayúsculas)
    
-    const P = createdCategories;  // alias corto
+    const P = createdCategories;  
     const S = createdSuppliers;
 
     const productsSeed = [
@@ -183,7 +182,7 @@ async function seedData() {
     ].map(pr => ({ ...pr, sku: String(pr.sku).trim().toUpperCase() }));
 
     const createdProducts = await Product.insertMany(productsSeed);
-    console.log(`📦 Productos creados: ${createdProducts.length}`);
+    console.log(`Productos creados: ${createdProducts.length}`);
 
     
     // 5) Clientes
@@ -222,7 +221,7 @@ async function seedData() {
     console.log(`   Products:   ${cP}`);
     console.log(`   Customers:  ${cCu}`);
 
-    console.log('\n✅ Seed completado exitosamente!');
+    console.log('\n Seed completado exitosamente!');
   } catch (err) {
     console.error('Error en seed:', err);
     process.exitCode = 1;

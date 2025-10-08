@@ -1,10 +1,17 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
+const User = require('../models/User');
+const { auth } = require('../middleware/auth');
+
 const router = express.Router();
 
-// Middleware de validación
+const signToken = (user) =>
+  jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+  });
+
+// Validaciones 
 const validateRegistration = [
   body('username').isLength({ min: 3 }).withMessage('Username debe tener al menos 3 caracteres'),
   body('email').isEmail().withMessage('Email inválido'),
@@ -14,45 +21,30 @@ const validateRegistration = [
 ];
 
 const validateLogin = [
-  body('username').notEmpty().withMessage('Username es requerido'),
+  body('username').notEmpty().withMessage('Username o email es requerido'),
   body('password').notEmpty().withMessage('Password es requerido')
 ];
 
-// Función para generar JWT
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
-  });
-};
-
-// POST /api/auth/register - Registrar nuevo usuario
+// Registro (seed)
 router.post('/register', validateRegistration, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Errores de validación',
-        errors: errors.array()
-      });
+      return res.status(400).json({ success: false, message: 'Errores de validación', errors: errors.array() });
     }
 
     const { username, email, password, firstName, lastName, role, phone } = req.body;
 
-    // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
+// Unicidad: usernameLower + email
+    const usernameLower = username.toLowerCase();
+    const existing = await User.findOne({
+      $or: [{ email: email.toLowerCase() }, { usernameLower }]
     });
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: 'Usuario o email ya existe'
-      });
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'Usuario o email ya existe' });
     }
 
-    // Crear nuevo usuario
-    const user = new User({
+    const user = await User.create({
       username,
       email,
       password,
@@ -62,232 +54,127 @@ router.post('/register', validateRegistration, async (req, res) => {
       phone
     });
 
-    await user.save();
-
-    // Generar token
-    const token = generateToken(user._id);
-
-    // Responder sin incluir la contraseña
-    const userResponse = user.toObject();
-    delete userResponse.password;
+    const token = signToken(user);
+    const { password: _pw, ...safe } = user.toObject();
 
     res.status(201).json({
       success: true,
       message: 'Usuario registrado exitosamente',
-      data: {
-        user: userResponse,
-        token
-      }
+      data: { user: safe, token }
     });
-
-  } catch (error) {
-    console.error('Error al registrar usuario:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+  } catch (err) {
+    console.error('Error al registrar usuario:', err);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
-// POST /api/auth/login - Iniciar sesión
+// Login (username o email) 
 router.post('/login', validateLogin, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Errores de validación',
-        errors: errors.array()
-      });
+      return res.status(400).json({ success: false, message: 'Errores de validación', errors: errors.array() });
     }
 
     const { username, password } = req.body;
 
-    // Buscar usuario por username o email
-    const user = await User.findOne({
-      $or: [{ username }, { email: username }],
+// Permite login con username o email
+    const q = {
+      $or: [
+        { usernameLower: String(username).toLowerCase() },
+        { email: String(username).toLowerCase() }
+      ],
       isActive: true
-    });
+    };
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciales inválidas'
-      });
-    }
+  // Importante: traer password explícitamente
+    const user = await User.findOne(q).select('+password');
+    if (!user) return res.status(401).json({ success: false, message: 'Credenciales inválidas' });
 
-    // Verificar contraseña
-    const isValidPassword = await user.comparePassword(password);
-    if (!isValidPassword) {
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciales inválidas'
-      });
-    }
+    const ok = await user.comparePassword(password);
+    if (!ok) return res.status(401).json({ success: false, message: 'Credenciales inválidas' });
 
-    // Actualizar último login
     user.lastLogin = new Date();
     await user.save();
 
-    // Generar token
-    const token = generateToken(user._id);
-
-    // Responder sin incluir la contraseña
-    const userResponse = user.toObject();
-    delete userResponse.password;
+    const token = signToken(user);
+    const { password: _pw, ...safe } = user.toObject();
 
     res.json({
       success: true,
       message: 'Login exitoso',
-      data: {
-        user: userResponse,
-        token
-      }
+      data: { user: safe, token }
     });
-
-  } catch (error) {
-    console.error('Error al hacer login:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+  } catch (err) {
+    console.error('Error al hacer login:', err);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
-// GET /api/auth/profile - Obtener perfil del usuario autenticado
-router.get('/profile', async (req, res) => {
+// Perfil 
+router.get('/profile', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token no proporcionado'
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Usuario no encontrado o inactivo'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: { user }
-    });
-
-  } catch (error) {
-    console.error('Error al obtener perfil:', error);
-    res.status(401).json({
-      success: false,
-      message: 'Token inválido'
-    });
+    const user = await User.findById(req.user._id)
+      .select('username email role firstName lastName phone isActive createdAt updatedAt');
+    if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    res.json({ success: true, data: { user } });
+  } catch (err) {
+    console.error('Error al obtener perfil:', err);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
-// PUT /api/auth/profile - Actualizar perfil
-router.put('/profile', async (req, res) => {
+// Actualizar perfil (usa auth) 
+router.put('/profile', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token no proporcionado'
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { firstName, lastName, phone, email } = req.body;
 
-    const user = await User.findByIdAndUpdate(
-      decoded.userId,
-      { firstName, lastName, phone, email },
-      { new: true, runValidators: true }
-    ).select('-password');
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Usuario no encontrado'
-      });
+    // Opcional: impedir cambio de email a uno ya usado
+    if (email) {
+      const exists = await User.findOne({ _id: { $ne: req.user._id }, email: String(email).toLowerCase() });
+      if (exists) return res.status(400).json({ success: false, message: 'Ese email ya está en uso' });
     }
 
-    res.json({
-      success: true,
-      message: 'Perfil actualizado exitosamente',
-      data: { user }
-    });
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { firstName, lastName, phone, email },
+      { new: true, runValidators: true }
+    ).select('username email role firstName lastName phone isActive createdAt updatedAt');
 
-  } catch (error) {
-    console.error('Error al actualizar perfil:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+
+    res.json({ success: true, message: 'Perfil actualizado exitosamente', data: { user } });
+  } catch (err) {
+    console.error('Error al actualizar perfil:', err);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
-// POST /api/auth/change-password - Cambiar contraseña
-router.post('/change-password', async (req, res) => {
+// Cambiar contraseña (usa auth) 
+router.post('/change-password', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token no proporcionado'
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'Contraseña actual y nueva son requeridas'
-      });
+      return res.status(400).json({ success: false, message: 'Contraseña actual y nueva son requeridas' });
+    }
+    if (String(newPassword).length < 6) {
+      return res.status(400).json({ success: false, message: 'La nueva contraseña debe tener al menos 6 caracteres' });
     }
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'La nueva contraseña debe tener al menos 6 caracteres'
-      });
-    }
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
 
-    const user = await User.findById(decoded.userId);
-    
-    // Verificar contraseña actual
-    const isValidPassword = await user.comparePassword(currentPassword);
-    if (!isValidPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'Contraseña actual incorrecta'
-      });
-    }
+    const ok = await user.comparePassword(currentPassword);
+    if (!ok) return res.status(400).json({ success: false, message: 'Contraseña actual incorrecta' });
 
-    // Actualizar contraseña
-    user.password = newPassword;
+    user.password = newPassword; // pre('save') hará el hash
     await user.save();
 
-    res.json({
-      success: true,
-      message: 'Contraseña cambiada exitosamente'
-    });
-
-  } catch (error) {
-    console.error('Error al cambiar contraseña:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    res.json({ success: true, message: 'Contraseña cambiada exitosamente' });
+  } catch (err) {
+    console.error('Error al cambiar contraseña:', err);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
