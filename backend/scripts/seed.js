@@ -34,18 +34,42 @@ async function seedData() {
    
     // 1) Usuarios (con password hasheado)
     
-    const usersSeed = [
-      { username: 'admin',    email: 'admin@ferreteria.com',    password: 'admin123',    firstName: 'Administrador', lastName: 'Sistema', role: 'admin',   phone: '+56912345678' },
-      { username: 'cajero1',  email: 'cajero1@ferreteria.com',  password: 'cajero123',   firstName: 'María',         lastName: 'González', role: 'cashier', phone: '+56987654321' },
-      { username: 'empleado1',email: 'empleado1@ferreteria.com',password: 'empleado123', firstName: 'Juan',          lastName: 'Pérez',    role: 'employee',phone: '+56911223344' },
-    ];
+    // 1. Crear usuarios
+const users = [
+  {
+    username: 'admin',
+    usernameLower: 'admin', 
+    email: 'admin@ferreteria.com',
+    password: 'admin123',
+    firstName: 'Administrador',
+    lastName: 'Sistema',
+    role: 'admin',
+    phone: '+56912345678'
+  },
+  {
+    username: 'cajero1',
+    usernameLower: 'cajero1',
+    email: 'cajero1@ferreteria.com',
+    password: 'cajero123',
+    firstName: 'María',
+    lastName: 'González',
+    role: 'cashier',
+    phone: '+56987654321'
+  },
+  {
+    username: 'empleado1',
+    usernameLower: 'empleado1',
+    email: 'empleado1@ferreteria.com',
+    password: 'empleado123',
+    firstName: 'Juan',
+    lastName: 'Pérez',
+    role: 'employee',
+    phone: '+56911223344'
+  }
+];
 
-    const salt = await bcrypt.genSalt(10);
-    const usersForInsert = await Promise.all(
-      usersSeed.map(async u => ({ ...u, password: await bcrypt.hash(u.password, salt) }))
-    );
-    const createdUsers = await User.insertMany(usersForInsert);
-    console.log(`👥 Usuarios creados: ${createdUsers.length}`);
+const createdUsers = await User.insertMany(users);
+console.log('Usuarios creados:', createdUsers.length);
 
    
     // 2) Categorías (forzamos nameLower porque insertMany no dispara pre('save'))
