@@ -1,34 +1,39 @@
-import { useEffect, useState } from 'react';
-import api from '../lib/api';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { api } from "../lib/api";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Products() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [items, setItems] = useState([]);
-  const [err, setErr] = useState('');
+  const [q, setQ] = useState("");
 
   useEffect(() => {
-    api.get('/products')
-      .then(res => setItems(res.data?.data?.products ?? []))
-      .catch(e => setErr(e.response?.data?.message || 'Error cargando productos'));
-  }, []);
+    (async () => {
+      const { data } = await api.get("/products", { params: { search: q } });
+      setItems(data?.data?.products ?? []);
+    })();
+  }, [q]);
 
   return (
-    <div style={{ padding: 24, fontFamily: 'system-ui' }}>
-      <header style={{ display:'flex', justifyContent:'space-between', marginBottom: 16 }}>
-        <h2>Productos</h2>
-        <div>
-          {user ? <span style={{ marginRight: 8 }}>Hola, {user.firstName}</span> : null}
-          <button onClick={logout}>Salir</button>
-        </div>
-      </header>
-
-      {err && <p style={{ color:'crimson' }}>{err}</p>}
-      <ul>
+    <div style={{ padding: 24 }}>
+      <h2>Productos</h2>
+      <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+        <input placeholder="Buscar…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <button onClick={logout}>Salir</button>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16 }}>
         {items.map(p => (
-          <li key={p._id}>{p.name} — {p.sku}</li>
+          <article key={p._id} style={{ border: "1px solid #eee", borderRadius: 8, padding: 12 }}>
+            <img src={p.images?.find(i=>i.isPrimary)?.url ?? "/placeholder.png"} alt={p.name} style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: 6 }} />
+            <h4 style={{ margin: "8px 0" }}>{p.name}</h4>
+            <div style={{ fontWeight: 700 }}>${p.pricing?.sellingPrice?.toLocaleString?.() ?? "-"}</div>
+            <small>SKU: {p.sku}</small>
+            <div style={{ marginTop: 8 }}>
+              <button onClick={() => alert("Añadido al carrito (demo)")}>Agregar</button>
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

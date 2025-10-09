@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from "../contexts/AuthContext";
 import { useQuery } from '@tanstack/react-query';
 import { reportsService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';

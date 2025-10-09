@@ -1,38 +1,42 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
-  const { login, loading } = useAuth();
+  const { login } = useAuth();
   const nav = useNavigate();
-  const [username, setUsername] = useState('admin@ferreteria.com');
-  const [password, setPassword] = useState('admin123');
-  const [msg, setMsg] = useState('');
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [err, setErr] = useState("");
 
-  const onSubmit = async (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
-    const r = await login(username, password);
-    if (r.ok) nav('/');
-    else setMsg(r.message);
-  };
+    setErr("");
+    try {
+      await login(form);
+      nav("/"); // Dashboard
+    } catch (e) {
+      setErr("Credenciales inválidas");
+    }
+  }
 
   return (
-    <div style={{ maxWidth: 360, margin: '80px auto', fontFamily: 'system-ui' }}>
+    <div style={{ padding: 24, maxWidth: 360, margin: "40px auto" }}>
       <h2>Iniciar sesión</h2>
-      <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12 }}>
-        <label>
-          Usuario o email
-          <input value={username} onChange={e=>setUsername(e.target.value)} required />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
-        </label>
-        <button disabled={loading} type="submit">
-          {loading ? 'Ingresando...' : 'Entrar'}
-        </button>
+      <form onSubmit={onSubmit}>
+        <input
+          placeholder="usuario o email"
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
+        />
+        <input
+          type="password"
+          placeholder="contraseña"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        <button type="submit">Entrar</button>
       </form>
-      {msg && <p style={{ color: 'crimson' }}>{msg}</p>}
+      {err && <p style={{ color: "tomato" }}>{err}</p>}
     </div>
   );
 }
