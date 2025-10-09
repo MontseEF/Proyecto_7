@@ -1,28 +1,25 @@
-import React from 'react';
-import { useAuth } from "../contexts/AuthContext";
-import { useQuery } from '@tanstack/react-query';
-import { reportsService } from '../services/api';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import ErrorMessage from '../components/common/ErrorMessage';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { reportsService } from "../services/api";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import ErrorMessage from "../components/common/ErrorMessage";
 import {
   CurrencyDollarIcon,
   ShoppingCartIcon,
   CubeIcon,
   ExclamationTriangleIcon,
   UsersIcon,
-  TrendingUpIcon,
-} from '@heroicons/react/24/outline';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+  ArrowTrendingUpIcon, // ← reemplazo correcto en Heroicons v2
+} from "@heroicons/react/24/outline";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const Dashboard = () => {
-  const { data, isLoading, error, refetch } = useQuery(
-    'dashboard',
-    reportsService.getDashboard,
-    {
-      refetchInterval: 30000, // Actualizar cada 30 segundos
-    }
-  );
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: reportsService.getDashboard,
+    refetchInterval: 30000, // Actualiza cada 30 segundos
+  });
 
   if (isLoading) {
     return <LoadingSpinner size="lg" text="Cargando dashboard..." />;
@@ -30,7 +27,7 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <ErrorMessage 
+      <ErrorMessage
         message="Error al cargar el dashboard"
         onRetry={refetch}
       />
@@ -43,46 +40,51 @@ const Dashboard = () => {
     inventory,
     topProducts,
     topCustomers,
-    paymentMethodStats
+    paymentMethodStats,
   } = data.data;
 
   const statsCards = [
     {
-      title: 'Ventas Hoy',
+      title: "Ventas Hoy",
       value: todayStats.sales,
       subtitle: `$${todayStats.revenue.toLocaleString()}`,
       icon: ShoppingCartIcon,
-      color: 'blue',
+      color: "blue",
     },
     {
-      title: 'Ventas del Mes',
+      title: "Ventas del Mes",
       value: monthlyStats.sales,
       subtitle: `$${monthlyStats.revenue.toLocaleString()}`,
-      icon: TrendingUpIcon,
-      color: 'green',
+      icon: ArrowTrendingUpIcon,
+      color: "green",
     },
     {
-      title: 'Stock Bajo',
+      title: "Stock Bajo",
       value: inventory.lowStockProducts,
-      subtitle: 'Productos',
+      subtitle: "Productos",
       icon: ExclamationTriangleIcon,
-      color: 'yellow',
+      color: "yellow",
     },
     {
-      title: 'Promedio Ticket',
-      value: monthlyStats.sales > 0 ? `$${Math.round(monthlyStats.revenue / monthlyStats.sales).toLocaleString()}` : '$0',
-      subtitle: 'Este mes',
+      title: "Promedio Ticket",
+      value:
+        monthlyStats.sales > 0
+          ? `$${Math.round(
+              monthlyStats.revenue / monthlyStats.sales
+            ).toLocaleString()}`
+          : "$0",
+      subtitle: "Este mes",
       icon: CurrencyDollarIcon,
-      color: 'purple',
+      color: "purple",
     },
   ];
 
   const getColorClasses = (color) => {
     const colors = {
-      blue: 'bg-blue-500 text-blue-600 bg-blue-50',
-      green: 'bg-green-500 text-green-600 bg-green-50',
-      yellow: 'bg-yellow-500 text-yellow-600 bg-yellow-50',
-      purple: 'bg-purple-500 text-purple-600 bg-purple-50',
+      blue: "bg-blue-500 text-blue-600 bg-blue-50",
+      green: "bg-green-500 text-green-600 bg-green-50",
+      yellow: "bg-yellow-500 text-yellow-600 bg-yellow-50",
+      purple: "bg-purple-500 text-purple-600 bg-purple-50",
     };
     return colors[color] || colors.blue;
   };
@@ -100,13 +102,15 @@ const Dashboard = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => {
-          const colorClasses = getColorClasses(stat.color).split(' ');
+          const colorClasses = getColorClasses(stat.color).split(" ");
           return (
             <div key={index} className="stats-card">
               <div className="stats-card-content">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <div className={`w-8 h-8 ${colorClasses[2]} rounded-md flex items-center justify-center`}>
+                    <div
+                      className={`w-8 h-8 ${colorClasses[2]} rounded-md flex items-center justify-center`}
+                    >
                       <stat.icon className={`w-5 h-5 ${colorClasses[1]}`} />
                     </div>
                   </div>
@@ -145,7 +149,10 @@ const Dashboard = () => {
             {topProducts.length > 0 ? (
               <div className="space-y-4">
                 {topProducts.map((product, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {product.name}
@@ -185,7 +192,10 @@ const Dashboard = () => {
             {topCustomers.length > 0 ? (
               <div className="space-y-4">
                 {topCustomers.map((customer, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
                         <UsersIcon className="h-8 w-8 text-gray-400" />
@@ -232,13 +242,13 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {paymentMethodStats.map((method, index) => {
                 const methodNames = {
-                  cash: 'Efectivo',
-                  card: 'Tarjeta',
-                  transfer: 'Transferencia',
-                  credit: 'Crédito',
-                  mixed: 'Mixto',
+                  cash: "Efectivo",
+                  card: "Tarjeta",
+                  transfer: "Transferencia",
+                  credit: "Crédito",
+                  mixed: "Mixto",
                 };
-                
+
                 return (
                   <div key={index} className="text-center">
                     <div className="text-2xl font-bold text-gray-900">
@@ -267,9 +277,7 @@ const Dashboard = () => {
         </div>
         <div className="card-body">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button className="btn-primary text-center">
-              Nueva Venta
-            </button>
+            <button className="btn-primary text-center">Nueva Venta</button>
             <button className="btn-secondary text-center">
               Agregar Producto
             </button>

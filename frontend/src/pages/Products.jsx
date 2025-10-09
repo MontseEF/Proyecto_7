@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { api } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Products() {
