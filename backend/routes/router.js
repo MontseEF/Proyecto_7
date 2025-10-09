@@ -1,5 +1,17 @@
 const express = require('express');
+const mongoose = require('mongoose'); 
 const router = express.Router();
+
+// Healthcheck
+router.get('/health', (_req, res) => {
+  const states = ['desconectado', 'conectado', 'conectando', 'desconectando'];
+  res.json({
+    ok: true,
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    mongoState: states[mongoose.connection.readyState] || 'desconocido',
+    time: new Date().toISOString()
+  });
+});
 
 // Importar subrutas
 const authRoutes = require('./auth');
@@ -15,7 +27,7 @@ const reportRoutes = require('./reports');
 router.get('/', (_req, res) => {
   res.json({
     ok: true,
-    message: 'Router Ferretería operativo',
+    message: 'Router Ferretería operativo'
   });
 });
 

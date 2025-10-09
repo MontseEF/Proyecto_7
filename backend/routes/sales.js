@@ -12,7 +12,7 @@ const { auth, authorize } = require('../middleware/auth');
 const router = express.Router();
 
 
-   Validaciones
+// Validaciones
 
 const validateSale = [
   body('items').isArray({ min: 1 }).withMessage('Debe incluir al menos un producto'),
