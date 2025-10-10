@@ -11,7 +11,9 @@ router.use((req, _res, next) => {
 // Subrutas
 const authRoutes = require('./auth');
 const productRoutes = require('./products');
-// Si quieres, luego activas las demás:
+const reportsRoutes = require('./reports');
+const paymentsRoutes = require('./payments');
+// Luego activar las demás:
 // const categoryRoutes = require('./categories');
 // const customerRoutes = require('./customers');
 // const supplierRoutes = require('./suppliers');
@@ -34,6 +36,8 @@ router.get('/', (_req, res) => res.json({ ok: true, message: 'Router Ferretería
 // Montaje de rutas (ORDEN IMPORTA)
 router.use('/auth', authRoutes);
 router.use('/products', productRoutes);
+router.use('/reports', reportsRoutes);
+router.use('/payments', paymentsRoutes);
 
 // 404 del router (siempre al final)
 router.use('*', (_req, res) => res.status(404).json({ message: 'Ruta de API no encontrada' }));

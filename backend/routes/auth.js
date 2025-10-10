@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -65,4 +66,55 @@ router.post('/login', validateLogin, async (req, res) => {
   }
 });
 
+// GET /api/auth/profile - Obtener perfil del usuario autenticado
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Usuario no encontrado' 
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Usuario inactivo' 
+      });
+    }
+
+    res.json({
+      success: true,
+      data: { user }
+    });
+  } catch (error) {
+    console.error('AUTH /profile error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error interno del servidor' 
+    });
+  }
+});
+
+// POST /api/auth/logout - Cerrar sesión (opcional, principalmente para limpiar frontend)
+router.post('/logout', auth, async (req, res) => {
+  try {
+    // En un JWT stateless no necesitamos hacer nada en el servidor
+    // La limpieza del token se maneja en el frontend
+    res.json({
+      success: true,
+      message: 'Logout exitoso'
+    });
+  } catch (error) {
+    console.error('AUTH /logout error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error interno del servidor' 
+    });
+  }
+});
+
 module.exports = router;
+

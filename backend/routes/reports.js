@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Sale = require('../models/Sale');
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
@@ -190,7 +191,7 @@ router.get('/sales', auth, async (req, res) => {
           month: { $month: '$createdAt' }
         };
         break;
-      default: // day
+      default: 
         dateGrouping = {
           year: { $year: '$createdAt' },
           month: { $month: '$createdAt' },

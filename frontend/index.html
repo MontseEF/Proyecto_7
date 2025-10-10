@@ -3,7 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ferretería</title>
+        <title>Ferretería Zona Franca - Tu ferretería de confianza</title>
+
+    <!-- CSP más permisiva para desarrollo -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network 'sha256-7PZaH7TzFg4JdT5xJguN7Och6VcMcP1LW4N3fQ936Fs=' 'sha256-MqH8JJslY2fF2bGYY1rZlpCNrRCnWKRzrrDefixUJTI=' 'sha256-ZswfTY7H35rbv8WC7NXBoiC7WNu86vSzCDChNWwZZDM=';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https: blob:;
+      connect-src 'self' http://localhost:3000 http://localhost:5173 https://api.stripe.com https://m.stripe.network ws: wss: ws://localhost:* wss://localhost:*;
+      frame-src https://js.stripe.com https://hooks.stripe.com https://m.stripe.network;
+      font-src 'self' data:;
+      worker-src 'self' blob:;
+    " />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <link rel="shortcut icon" type="image/jpeg" href="/favicon.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.jpg" />
+
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="Ferretería Zona Franca - Tu ferretería de confianza con más de 20 años sirviendo a la comunidad. Herramientas, materiales de construcción y todo lo que necesitas para tus proyectos." />
+    <meta name="keywords" content="ferretería, herramientas, construcción, materiales, Santiago, Chile" />
+    <meta name="author" content="Ferretería Zona Franca" />
   </head>
   <body>
     <div id="root"></div>
