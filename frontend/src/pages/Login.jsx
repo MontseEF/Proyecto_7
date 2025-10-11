@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import logo from '../image/logo.jpg';
 
 export default function Login() {
   const { login } = useAuth();
@@ -28,21 +29,21 @@ export default function Login() {
     nav("/");
   };
 
-return (
+  return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo y titulo */}
         <div className="flex flex-col items-center">
           <img 
-            src="/logo.jpeg" 
-            alt="Ferretería Zona Franca Logo" 
+            src={logo} 
+            alt="Ferretería Zona Austral Logo" 
             className="h-20 w-auto rounded-lg mb-4" 
           />
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Iniciar Sesión
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Accede a tu cuenta de Ferretería Zona Franca
+            Accede a tu cuenta de Ferretería Zona Austral
           </p>
         </div>
       </div>

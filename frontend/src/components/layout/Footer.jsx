@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../../image/logo.jpg';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,12 +12,12 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <img 
-                src="/logo.jpeg" 
-                alt="Ferretería Zona Franca Logo" 
+                src={logo} 
+                alt="Ferretería Zona Austral Logo" 
                 className="h-16 w-auto rounded-md mb-4" 
               />
               <h2 className="text-2xl font-bold text-white mb-4">
-                Ferretería Zona Franca
+                Ferretería Zona Austral
               </h2>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -103,7 +104,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-700 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm">
-            © {currentYear} Ferretería Zona Franca. Todos los derechos reservados.
+            © {currentYear} Ferretería Zona Austral. Todos los derechos reservados.
           </div>
           <div className="flex space-x-6 mt-4 sm:mt-0">
             <a 
