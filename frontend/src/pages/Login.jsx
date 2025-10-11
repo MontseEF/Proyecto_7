@@ -34,7 +34,7 @@ return (
         {/* Logo y titulo */}
         <div className="flex flex-col items-center">
           <img 
-            src="/logo.jpg" 
+            src="/logo.jpeg" 
             alt="Ferretería Zona Franca Logo" 
             className="h-20 w-auto rounded-lg mb-4" 
           />

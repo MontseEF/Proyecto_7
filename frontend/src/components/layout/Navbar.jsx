@@ -14,7 +14,7 @@ export default function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <img 
                 className="h-10 w-auto rounded-md" 
-                src="/logo.jpg" 
+                src="/logo.jpeg" 
                 alt="Ferretería Zona Franca" 
               />
               <span className="ml-3 text-xl font-bold text-gray-800">

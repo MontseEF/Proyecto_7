@@ -30,7 +30,8 @@
     "mongoose": "^7.5.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.4",
-    "react-router-dom": "^7.9.4"
+    "react-router-dom": "^7.9.4",
+    "stripe": "^19.1.0"
   },
   "devDependencies": {
     "jest": "^29.6.2",
