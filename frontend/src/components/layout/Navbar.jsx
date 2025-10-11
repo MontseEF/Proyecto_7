@@ -1,123 +1,80 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { Bars3Icon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { useCart } from '../../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
-
-export default function Navbar() {
+const Navbar = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
+  const { itemCount } = useCart();
+  const navigate = useNavigate();
 
- return (
-    <nav className="bg-white shadow-lg border-b-2 border-blue-600">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            {/* Logo */}
-            <div className="flex-shrink-0 flex items-center">
-              <img 
-                className="h-10 w-auto rounded-md" 
-                src="/logo.jpeg" 
-                alt="Ferretería Zona Franca" 
-              />
-              <span className="ml-3 text-xl font-bold text-gray-800">
-                Ferretería Zona Franca
-              </span>
-            </div>
-          </div>
+  return (
+    <header className="bg-white shadow-md px-4 py-3 flex items-center justify-between md:justify-start">
+      {/* Botón hamburguesa para móviles */}
+      <button
+        className="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
+        onClick={onToggleSidebar}
+      >
+        <Bars3Icon className="h-6 w-6" />
+      </button>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a 
-              href="#dashboard" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Dashboard
-            </a>
-            <a 
-              href="#productos" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Productos
-            </a>
-            <a 
-              href="#ventas" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Ventas
-            </a>
-            <a 
-              href="#clientes" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Clientes
-            </a>
-            <a 
-              href="#inventario" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Inventario
-            </a>
-          </div>
+      {/* Título o logo */}
+      <h1 className="text-xl font-bold text-gray-800 ml-4">Ferretería Zona Franca</h1>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            {user && (
-              <>
-                <div className="hidden md:block">
-                  <span className="text-gray-700 text-sm">
-                    Bienvenido, <span className="font-medium">{user.firstName}</span>
-                  </span>
-                  <span className="ml-2 badge badge-info">
-                    {user.role === 'admin' ? 'Administrador' : 
-                     user.role === 'cashier' ? 'Cajero' : 
-                     user.role === 'employee' ? 'Empleado' : user.role}
-                  </span>
-                </div>
-                <button
-                  onClick={logout}
-                  className="btn-secondary text-sm"
-                >
-                  Cerrar Sesión
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+      {/* Acciones del usuario */}
+      <div className="ml-auto flex items-center space-x-4">
+        {/* Ícono del carrito */}
+        <button
+          onClick={() => navigate('/cart')}
+          className="relative text-gray-600 hover:text-gray-900"
+        >
+          <ShoppingCartIcon className="h-6 w-6" />
+          {itemCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+              {itemCount}
+            </span>
+          )}
+        </button>
+
+        {/* Usuario y logout */}
+        {user ? (
+          <>
+            <span className="text-sm text-gray-600">
+              {user.name} ({user.role})
+            </span>
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+            >
+              Cerrar sesión
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+            >
+              Iniciar sesión
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
+            >
+              Crear cuenta
+            </button>
+            <button
+              onClick={() => navigate('/forgot-password')}
+              className="text-sm text-blue-500 hover:underline"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+          </>
+        )}
       </div>
-
-      {/* Mobile menu */}
-      <div className="md:hidden">
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50">
-          <a 
-            href="#dashboard" 
-            className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-          >
-            Dashboard
-          </a>
-          <a 
-            href="#productos" 
-            className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-          >
-            Productos
-          </a>
-          <a 
-            href="#ventas" 
-            className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-          >
-            Ventas
-          </a>
-          <a 
-            href="#clientes" 
-            className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-          >
-            Clientes
-          </a>
-          <a 
-            href="#inventario" 
-            className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-          >
-            Inventario
-          </a>
-        </div>
-      </div>
-    </nav>
+    </header>
   );
-}
+};
+
+export default Navbar;

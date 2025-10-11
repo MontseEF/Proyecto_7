@@ -13,7 +13,7 @@ const authRoutes = require('./auth');
 const productRoutes = require('./products');
 const reportsRoutes = require('./reports');
 const paymentsRoutes = require('./payments');
-// Luego activar las demás:
+// Si quieres, luego activas las demás:
 // const categoryRoutes = require('./categories');
 // const customerRoutes = require('./customers');
 // const supplierRoutes = require('./suppliers');

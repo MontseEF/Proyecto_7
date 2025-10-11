@@ -1,4 +1,5 @@
 import React from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { reportsService } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
@@ -6,20 +7,21 @@ import ErrorMessage from "../components/common/ErrorMessage";
 import {
   CurrencyDollarIcon,
   ShoppingCartIcon,
-  CubeIcon,
   ExclamationTriangleIcon,
   UsersIcon,
-  ArrowTrendingUpIcon, // ← reemplazo correcto en Heroicons v2
+  ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 const Dashboard = () => {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["dashboard"],
-    queryFn: reportsService.getDashboard,
-    refetchInterval: 30000, // Actualiza cada 30 segundos
-  });
+  const { data, isLoading, error, refetch } = useQuery(
+    "dashboard",
+    reportsService.getDashboard,
+    {
+      refetchInterval: 30000,
+    }
+  );
 
   if (isLoading) {
     return <LoadingSpinner size="lg" text="Cargando dashboard..." />;
@@ -27,10 +29,7 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <ErrorMessage
-        message="Error al cargar el dashboard"
-        onRetry={refetch}
-      />
+      <ErrorMessage message="Error al cargar el dashboard" onRetry={refetch} />
     );
   }
 
@@ -55,7 +54,7 @@ const Dashboard = () => {
       title: "Ventas del Mes",
       value: monthlyStats.sales,
       subtitle: `$${monthlyStats.revenue.toLocaleString()}`,
-      icon: ArrowTrendingUpIcon,
+      icon: TrendingUpIcon,
       color: "green",
     },
     {
@@ -275,15 +274,17 @@ const Dashboard = () => {
             Acciones Rápidas
           </h3>
         </div>
+        <div className="flex items-center space-x-2">
+          <ArrowTrendingUpIcon className="h-6 w-6 text-green-500" />
+          <span className="text-lg font-semibold">Ventas en aumento</span>
+        </div>
         <div className="card-body">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button className="btn-primary text-center">Nueva Venta</button>
             <button className="btn-secondary text-center">
               Agregar Producto
             </button>
-            <button className="btn-secondary text-center">
-              Nuevo Cliente
-            </button>
+            <button className="btn-secondary text-center">Nuevo Cliente</button>
             <button className="btn-secondary text-center">
               Ver Inventario
             </button>
@@ -295,4 +296,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
