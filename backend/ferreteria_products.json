@@ -1,23 +1,23 @@
 [
   {
-    "name": "Cemento 49",
-    "description": "Descripción de Cemento 49 de alta calidad",
+    "name": "Cemento 25 kg",
+    "description": "Saco de cemento de 25 kg para construcción y reparaciones.",
     "sku": "PROD-0001",
     "barcode": "740778206772",
     "category": "652f5c8f9e2b6a1234567804",
     "supplier": "652f5cae9e2b6a1234567805",
-    "brand": "Truper",
+    "brand": "Polpaico",
     "model": "MDL-605",
     "specifications": {
       "weight": "1546 g",
       "dimensions": "61x8x27 cm",
-      "material": "Hierro",
-      "color": "Amarillo",
+      "material": "Polvo",
+      "color": "Gris",
       "size": "50 cm",
       "other": "Certificación ISO"
     },
     "pricing": {
-      "costPrice": 4624.73,
+      "costPrice": 4.200,
       "sellingPrice": 53601.2,
       "wholesalePrice": 53643.18,
       "discountPrice": 26454.66
@@ -40,7 +40,7 @@
       }
     ],
     "tags": [
-      "cemento 49",
+      "cemento ",
       "ferreteria",
       "herramientas"
     ],
@@ -53,8 +53,8 @@
     }
   },
   {
-    "name": "Martillo 26",
-    "description": "Descripción de Martillo 26 de alta calidad",
+    "name": "Martillo 12 oz",
+    "description": "Descripción de Martillo de alta calidad",
     "sku": "PROD-0002",
     "barcode": "217626337076",
     "category": "652f5c8f9e2b6a1234567806",
@@ -93,7 +93,7 @@
       }
     ],
     "tags": [
-      "martillo 26",
+      "martillo 12 oz",
       "ferreteria",
       "herramientas"
     ],
@@ -106,8 +106,8 @@
     }
   },
   {
-    "name": "Cemento 46",
-    "description": "Descripción de Cemento 46 de alta calidad",
+    "name": "Huincha 5 m",
+    "description": "Huincha de 5 metros para mediciones precisas en proyectos de construcción y bricolaje.",
     "sku": "PROD-0003",
     "barcode": "742803054713",
     "category": "652f5c8f9e2b6a1234567805",
@@ -141,7 +141,7 @@
     "images": [
       {
         "url": "https://example.com/images/PROD-0003.jpg",
-        "alt": "Cemento 46",
+        "alt": "Pala Punta Redonda",
         "isPrimary": true
       }
     ],
@@ -159,13 +159,13 @@
     }
   },
   {
-    "name": "Cemento 33",
-    "description": "Descripción de Cemento 33 de alta calidad",
+    "name": "Pala Punta Redonda",
+    "description": "Pala punta redonda ideal para excavaciones y trabajos de jardinería.",
     "sku": "PROD-0004",
     "barcode": "859045567152",
     "category": "652f5c8f9e2b6a1234567805",
     "supplier": "652f5cae9e2b6a1234567803",
-    "brand": "DeWalt",
+    "brand": "Truper",
     "model": "MDL-245",
     "specifications": {
       "weight": "1143 g",
@@ -194,7 +194,7 @@
     "images": [
       {
         "url": "https://example.com/images/PROD-0004.jpg",
-        "alt": "Cemento 33",
+        "alt": "Pala Punta Redonda",
         "isPrimary": true
       }
     ],
@@ -212,18 +212,18 @@
     }
   },
   {
-    "name": "Taladro 26",
-    "description": "Descripción de Taladro 26 de alta calidad",
+    "name": "Lija Madera 120",
+    "description": "Lija de grano 120 para acabados finos en madera y superficies lisas.",
     "sku": "PROD-0005",
     "barcode": "253694656512",
     "category": "652f5c8f9e2b6a1234567807",
     "supplier": "652f5cae9e2b6a1234567805",
-    "brand": "DeWalt",
+    "brand": "Bosch",
     "model": "MDL-863",
     "specifications": {
       "weight": "251 g",
       "dimensions": "41x34x47 cm",
-      "material": "Madera",
+      "material": "Papel",
       "color": "Verde",
       "size": "8 cm",
       "other": "Certificación ISO"
@@ -247,7 +247,7 @@
     "images": [
       {
         "url": "https://example.com/images/PROD-0005.jpg",
-        "alt": "Taladro 26",
+        "alt": "Lija",
         "isPrimary": true
       }
     ],
@@ -265,8 +265,8 @@
     }
   },
   {
-    "name": "Taladro 7",
-    "description": "Descripción de Taladro 7 de alta calidad",
+    "name": "Esmeril 4 1/2",
+    "description": "Esmeril de 4 1/2 pulgadas para corte y desbaste de metales y otros materiales.",
     "sku": "PROD-0006",
     "barcode": "428117259787",
     "category": "652f5c8f9e2b6a1234567801",
@@ -318,8 +318,8 @@
     }
   },
   {
-    "name": "Caño 4",
-    "description": "Descripción de Caño 4 de alta calidad",
+    "name": "Disco corte 4 1/2",
+    "description": "Disco corte de 4 1/2 pulgadas para esmeriles, ideal para cortar metales y otros materiales resistentes.",
     "sku": "PROD-0007",
     "barcode": "543443927852",
     "category": "652f5c8f9e2b6a1234567807",
@@ -371,19 +371,19 @@
     }
   },
   {
-    "name": "Taladro 26",
-    "description": "Descripción de Taladro 26 de alta calidad",
+    "name": "Alambre 1.5 mm verde",
+    "description": "Alambre electrico de 1.5 mm color verde, ideal para instalaciones eléctricas y proyectos de bricolaje.",
     "sku": "PROD-0008",
     "barcode": "860416044982",
     "category": "652f5c8f9e2b6a1234567803",
     "supplier": "652f5cae9e2b6a1234567801",
-    "brand": "Black&Decker",
+    "brand": "Legrand",
     "model": "MDL-505",
     "specifications": {
       "weight": "1140 g",
       "dimensions": "8x56x25 cm",
       "material": "Cobre",
-      "color": "Negro",
+      "color": "verde",
       "size": "34 cm",
       "other": "Certificación ISO"
     },
@@ -424,19 +424,19 @@
     }
   },
   {
-    "name": "Cinta métrica 37",
-    "description": "Descripción de Cinta métrica 37 de alta calidad",
+    "name": "Alambre 1.5 mm rojo",
+    "description": "Alambre electrico de 1.5 mm color rojo, ideal para instalaciones eléctricas y proyectos de bricolaje.",
     "sku": "PROD-0009",
     "barcode": "156046113044",
     "category": "652f5c8f9e2b6a1234567803",
     "supplier": "652f5cae9e2b6a1234567808",
-    "brand": "Black&Decker",
+    "brand": "Legrand",
     "model": "MDL-532",
     "specifications": {
       "weight": "1021 g",
       "dimensions": "64x97x36 cm",
       "material": "PVC",
-      "color": "Gris",
+      "color": "Rojo",
       "size": "23 cm",
       "other": "Certificación ISO"
     },
@@ -477,8 +477,8 @@
     }
   },
   {
-    "name": "Clavo 21",
-    "description": "Descripción de Clavo 21 de alta calidad",
+    "name": "Alambre 1.5 mm blanco ",
+    "description": "Alambre electrico de 1.5 mm color blanco, ideal para instalaciones eléctricas y proyectos de bricolaje.",
     "sku": "PROD-0010",
     "barcode": "618005261378",
     "category": "652f5c8f9e2b6a1234567806",
@@ -489,7 +489,7 @@
       "weight": "1508 g",
       "dimensions": "59x70x48 cm",
       "material": "Aluminio",
-      "color": "Naranja",
+      "color": "Blanco",
       "size": "8 cm",
       "other": "Certificación ISO"
     },
@@ -530,8 +530,8 @@
     }
   },
   {
-    "name": "Taladro 49",
-    "description": "Descripción de Taladro 49 de alta calidad",
+    "name": "Taladro Percutor",
+    "description": "Taladro percutor de alta potencia para trabajos de perforación en diversos materiales.",
     "sku": "PROD-0011",
     "barcode": "345669870226",
     "category": "652f5c8f9e2b6a1234567801",
@@ -542,7 +542,7 @@
       "weight": "1611 g",
       "dimensions": "11x22x11 cm",
       "material": "Plástico",
-      "color": "Verde",
+      "color": "Amarillo",
       "size": "36 cm",
       "other": "Certificación ISO"
     },
@@ -583,13 +583,13 @@
     }
   },
   {
-    "name": "Destornillador 32",
-    "description": "Descripción de Destornillador 32 de alta calidad",
+    "name": "Atornillador Ingco",
+    "description": "Atornillador Ingco de alta calidad para trabajos de ensamblaje y reparaciones.",
     "sku": "PROD-0012",
     "barcode": "961870864395",
     "category": "652f5c8f9e2b6a1234567804",
     "supplier": "652f5cae9e2b6a1234567809",
-    "brand": "Truper",
+    "brand": "Ingco",
     "model": "MDL-270",
     "specifications": {
       "weight": "1488 g",
